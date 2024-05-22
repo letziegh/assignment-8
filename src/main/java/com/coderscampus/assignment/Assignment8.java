@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -67,10 +69,11 @@ public class Assignment8 {
     }
     public void processNumbers(){
         int numOfCalls = numbers.size()/1000;
+        ExecutorService pool = Executors.newCachedThreadPool();
         List<CompletableFuture<List<Integer>>> futures = new ArrayList<>();
 
         for(int j=0;j<numOfCalls;j++){
-            futures.add(CompletableFuture.supplyAsync(this::getNumbers));
+            futures.add(CompletableFuture.supplyAsync(this::getNumbers,pool));
         }
 
         CompletableFuture<Void> allFutures = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
